@@ -1,0 +1,4 @@
+---
+# handlers file for carbonrelayng
+- name: restart carbon-relay-ng
+  service: name=carbon-relay-ng state=restarted

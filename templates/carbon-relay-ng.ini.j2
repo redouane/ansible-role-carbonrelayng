@@ -1,0 +1,30 @@
+instance = "default"
+
+max_procs = 2
+
+listen_addr = "{{ carbonrelayng_listen_addr }}"
+admin_addr = "{{ carbonrelayng_admin_addr }}"
+http_addr = "{{ carbonrelayng_http_addr }}"
+#spool_dir = "/var/spool/carbon-relay-ng"
+spool_dir = "{{ carbonrelayng_spool_dir }}"
+#pid_file = "/var/run/carbon-relay-ng.pid"
+pid_file = "{{ carbonrelayng_pid_file }}"
+#one of critical error warning notice info debug
+log_level = "{{ carbonrelayng_log_level }}"
+# How long to keep track of invalid metrics seen
+# Useful time units are "s", "m", "h"
+bad_metrics_max_age = "{{ carbonrelayng_badmetrics_max_usage }}"
+
+# put init commands here, in the same format as you'd use for the telnet interface
+# here's some examples:
+init = [
+    {% for command in carbonrelayng_init_commands %}
+        '{{ command }}' {% if not loop.last %},{% endif %}
+
+    {% endfor %}
+]
+
+[instrumentation]
+# in addition to serving internal metrics via expvar, you can optionally send em to graphite
+graphite_addr = ""  # localhost:2003 (how about feeding back into the relay itself? :)
+graphite_interval = 1000  # in ms
