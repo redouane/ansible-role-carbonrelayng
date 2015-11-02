@@ -1,5 +1,5 @@
-
 #! /bin/sh
+
 ### BEGIN INIT INFO
 # Provides:          carbon-relay-ng
 # Required-Start:    $remote_fs $syslog $network
@@ -10,13 +10,10 @@
 # Description:       Relay daemon for carbon-cache, a component of Graphite.
 ### END INIT INFO
 
-# Author: Torbjörn Norinder <torbjorn@genunix.se>. 
-# Based on a script by Jonas Genannt <jonas.genannt@capi2name.de>.
-
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 NAME=carbon-relay-ng
 DAEMON=/usr/local/bin/$NAME
-PIDFILE=/var/run/carbon-relay-ng/$NAME.pid
+PIDFILE=/var/run/$NAME.pid
 CONFFILE=/etc/carbon-relay-ng.ini
 DAEMON_ARGS=$CONFFILE
 SCRIPTNAME=/etc/init.d/$NAME
@@ -40,7 +37,7 @@ fi
 
 do_start()
 {
-    start-stop-daemon --no-close -c $RELAY_USER -d /var/lib/carbon-relay-ng --background --start --quiet --pidfile $PIDFILE --exec $DAEMON -- \
+    start-stop-daemon --no-close -c $RELAY_USER -d /var/lib/carbon-relay-ng --background --start --quiet --pidfile $PIDFILE --make-pidfile --exec $DAEMON -- \
         $DAEMON_ARGS >${LOG_DIR}/carbon-relay-ng.log 2>&1 \
         || return 2
 }

@@ -5,9 +5,7 @@ max_procs = 2
 listen_addr = "{{ carbonrelayng_listen_addr }}"
 admin_addr = "{{ carbonrelayng_admin_addr }}"
 http_addr = "{{ carbonrelayng_http_addr }}"
-#spool_dir = "/var/spool/carbon-relay-ng"
 spool_dir = "{{ carbonrelayng_spool_dir }}"
-#pid_file = "/var/run/carbon-relay-ng.pid"
 pid_file = "{{ carbonrelayng_pid_file }}"
 #one of critical error warning notice info debug
 log_level = "{{ carbonrelayng_log_level }}"

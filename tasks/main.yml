@@ -5,8 +5,10 @@
   with_items:
   - git
 
-- name: ensure golang workspace
-  file: path={{ carbonrelayng_golang_workspace }} state=directory
+- name: carbon-relay-ng install check
+  register: carbonrelayng_installed_check
+  stat: path={{ carbonrelayng_install_dir }}/carbon-relay-ng
+  changed_when: not carbonrelayng_installed_check.stat.exists
 
 - name: create carbon-relay-ng user
   user:
@@ -24,9 +26,6 @@
 - name: ensure install directory
   file: path={{ carbonrelayng_install_dir }} state=directory
 
-- name: ensure run directory
-  file: path=/var/run/carbon-relay-ng state=directory owner=carbon-relay-ng group=carbon-relay-ng
-
 - name: ensure lib directory
   file: path=/var/lib/carbon-relay-ng state=directory owner=carbon-relay-ng group=carbon-relay-ng
 
@@ -36,12 +35,17 @@
 - name: ensure log directory
   file: path=/var/log/carbon-relay-ng state=directory
 
+- name: ensure golang workspace
+  file: path={{ carbonrelayng_golang_workspace }} state=directory
+  when: not carbonrelayng_installed_check.stat.exists
+
 - name: fetch carbon-relay-ng repository
   environment:
     GOPATH: "{{ carbonrelayng_golang_workspace }}"
     PATH: "{{ ansible_env.PATH }}:{{ carbonrelayng_golang_workspace }}/bin"
   command: go get -d github.com/graphite-ng/carbon-relay-ng
     creates={{ carbonrelayng_golang_workspace }}/src/github.com/graphite-ng/carbon-relay-ng
+  when: not carbonrelayng_installed_check.stat.exists
 
 - name: fetch go-bindata repository and build it
   environment:
@@ -49,6 +53,7 @@
     PATH: "{{ ansible_env.PATH }}:{{ carbonrelayng_golang_workspace }}/bin"
   command: go get -u github.com/jteeuwen/go-bindata/...
     creates={{ carbonrelayng_golang_workspace }}/src/github.com/jteeuwen/go-bindata
+  when: not carbonrelayng_installed_check.stat.exists
 
 - name: make carbon-relay-ng binary
   environment:
@@ -57,10 +62,12 @@
   command: make
     chdir="{{ carbonrelayng_golang_workspace }}/src/github.com/graphite-ng/carbon-relay-ng"
     creates={{ carbonrelayng_golang_workspace }}/src/github.com/graphite-ng/carbon-relay-ng/carbon-relay-ng
+  when: not carbonrelayng_installed_check.stat.exists
 
 - name: copy carbon-relay-ng to install dir
   command: cp {{ carbonrelayng_golang_workspace }}/src/github.com/graphite-ng/carbon-relay-ng/carbon-relay-ng {{ carbonrelayng_install_dir }}
     creates={{ carbonrelayng_install_dir }}/carbon-relay-ng
+  when: not carbonrelayng_installed_check.stat.exists
 
 - name: symlink carbon-relay-ng binary to /usr/local/bin
   file:
@@ -74,6 +81,8 @@
     src=carbon-relay-ng.init.j2
     dest=/etc/init.d/carbon-relay-ng
     mode="a+x"
+  notify:
+  - restart carbon-relay-ng
 
 - name: configure carbon-relay-ng
   template:

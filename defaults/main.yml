@@ -7,7 +7,7 @@ carbonrelayng_listen_addr: 0.0.0.0:2003
 carbonrelayng_admin_addr: 0.0.0.0:2004
 carbonrelayng_http_addr: 0.0.0.0:8081
 carbonrelayng_spool_dir: /var/spool/carbon-relay-ng
-carbonrelayng_pid_file: /var/run/carbon-relay-ng/carbon-relay-ng.pid
+carbonrelayng_pid_file: "" #/var/run/carbon-relay-ng.pid
 carbonrelayng_log_level: notice
 carbonrelayng_badmetrics_max_usage: 24h
 carbonrelayng_init_commands:
