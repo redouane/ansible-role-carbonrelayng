@@ -22,7 +22,7 @@ carbonrelayng_listen_addr: 0.0.0.0:2003
 carbonrelayng_admin_addr: 0.0.0.0:2004
 carbonrelayng_http_addr: 0.0.0.0:8081
 carbonrelayng_spool_dir: /var/spool/carbon-relay-ng
-carbonrelayng_pid_file: /var/run/carbon-relay-ng/carbon-relay-ng.pid
+carbonrelayng_pid_file: "" #/var/run/carbon-relay-ng.pid
 carbonrelayng_log_level: notice
 carbonrelayng_badmetrics_max_usage: 24h
 carbonrelayng_init_commands:
@@ -33,6 +33,9 @@ carbonrelayng_init_commands:
 - addRoute sendAllMatch carbon-default  127.0.0.1:2005 spool=true pickle=false
 - addRoute sendAllMatch carbon-tagger sub==  127.0.0.1:2006  # all metrics with '=' in them are metrics2.0 format for tagger
 - addRoute sendFirstMatch analytics regex=(Err/s|wait_time|logger)  graphite.prod:2003 prefix=prod. spool=true pickle=true  graphite.staging:2003 prefix=staging. spool=true pickle=true
+
+carbonrelayng_instrumentation_graphite_addr: ""
+carbonrelayng_instrumentation_graphite_interval: 1000 # ms
 
 ```
 
